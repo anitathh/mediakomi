@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Медиакоми — угадай цену квартиры</title>
+<meta name="description" content="Игра: угадай стоимость квартир в Республике Коми по объявлениям Авито">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23012D6E'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%23fff' font-family='Arial'%3EМ%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== Стартовый экран ===== -->
+<section id="screen-start" class="screen screen--start">
+  <div class="start-card">
+    <div class="logo-mark">МК</div>
+    <h1 class="start-title">Медиакоми</h1>
+    <p class="start-subtitle">Угадай цену квартиры в Республике Коми</p>
+
+    <div class="rules">
+      <div class="rule">
+        <span class="rule-num">1</span>
+        <span>Смотри фотографии квартиры из реального объявления</span>
+      </div>
+      <div class="rule">
+        <span class="rule-num">2</span>
+        <span>Двигай бегунок и назови свою цену</span>
+      </div>
+      <div class="rule">
+        <span class="rule-num">3</span>
+        <span>Узнай настоящую цену, разницу и свой балл</span>
+      </div>
+      <div class="rule">
+        <span class="rule-num">4</span>
+        <span>10 квартир за игру — узнай, кто ты: жадный студент, адекватный квартирант или транжира</span>
+      </div>
+    </div>
+
+    <button id="btn-start" class="btn btn--primary">Запустить игру</button>
+    <p class="start-note">По данным активных объявлений Авито · Республика Коми</p>
+  </div>
+</section>
+
+<!-- ===== Игровой экран ===== -->
+<section id="screen-game" class="screen screen--game hidden">
+  <header class="game-header">
+    <div class="game-header-row">
+      <span class="brand">Медиакоми</span>
+      <span class="round-label">Квартира <b id="round-num">1</b> из 10</span>
+      <span class="score-chip" id="score-chip">0 б.</span>
+    </div>
+    <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+  </header>
+
+  <div class="card">
+    <!-- Галерея -->
+    <div class="gallery-wrap">
+      <div class="gallery" id="gallery"></div>
+      <button class="gal-arrow gal-arrow--prev" id="gal-prev" type="button" aria-label="Предыдущее фото">‹</button>
+      <button class="gal-arrow gal-arrow--next" id="gal-next" type="button" aria-label="Следующее фото">›</button>
+    </div>
+    <div class="gallery-nav" id="gallery-nav"></div>
+
+    <!-- Инфо о квартире -->
+    <div class="flat-info">
+      <span class="flat-desc" id="flat-desc"></span>
+      <span class="flat-street" id="flat-street"></span>
+    </div>
+
+    <!-- Бегунок -->
+    <div class="guess-block">
+      <div class="guess-top">
+        <span class="guess-label">Ваша цена</span>
+        <span class="guess-value" id="guess-value">1 000 000 ₽</span>
+      </div>
+      <input type="range" id="price-slider" class="slider" min="50000" max="2000000" step="5000" value="1000000" aria-label="Выбор цены">
+      <div class="slider-bounds"><span id="slider-min">50 тыс.</span><span id="slider-max">2 млн</span></div>
+    </div>
+
+    <button id="btn-answer" class="btn btn--primary btn--block">Оценить</button>
+  </div>
+</section>
+
+<!-- ===== Экран результата раунда ===== -->
+<section id="screen-result" class="screen screen--result hidden">
+  <header class="game-header">
+    <div class="game-header-row">
+      <span class="brand">Медиакоми</span>
+      <span class="round-label">Квартира <b id="round-num2">1</b> из 10</span>
+      <span class="score-chip" id="score-chip2">0 б.</span>
+    </div>
+    <div class="progress"><div class="progress-fill" id="progress-fill2"></div></div>
+  </header>
+
+  <div class="card">
+    <h2 class="result-title" id="result-verdict-round">Почти точно!</h2>
+    <p class="result-subtitle" id="result-subtitle"></p>
+
+    <div class="gallery-wrap gallery-wrap--result">
+      <div class="gallery" id="gallery2"></div>
+      <button class="gal-arrow gal-arrow--prev" id="gal2-prev" type="button" aria-label="Предыдущее фото">‹</button>
+      <button class="gal-arrow gal-arrow--next" id="gal2-next" type="button" aria-label="Следующее фото">›</button>
+    </div>
+    <div class="gallery-nav" id="gallery2-nav"></div>
+
+    <div class="result-rows">
+      <div class="result-row">
+        <span>Ваша цена</span>
+        <b id="result-guess">—</b>
+      </div>
+      <div class="result-row result-row--real">
+        <span>Реальная цена</span>
+        <b id="result-real">—</b>
+      </div>
+      <div class="result-row">
+        <span>Разница</span>
+        <b id="result-diff">—</b>
+      </div>
+      <div class="result-row result-row--points">
+        <span>Баллы</span>
+        <b id="result-points">—</b>
+      </div>
+    </div>
+
+    <a id="result-link" class="btn btn--ghost btn--block" href="#" target="_blank" rel="noopener">Открыть объявление на Авито ↗</a>
+    <button id="btn-next" class="btn btn--primary btn--block">Следующая квартира</button>
+  </div>
+</section>
+
+<!-- ===== Итоговый экран ===== -->
+<section id="screen-final" class="screen screen--final hidden">
+  <div class="final-card">
+    <p class="final-eyebrow">Ваш результат</p>
+    <div class="final-score"><b id="final-points">0</b><span>/ 1000 баллов</span></div>
+
+    <div class="final-avatar" id="final-emoji">🙂</div>
+    <h2 class="final-type" id="final-type">Адекватный квартирант</h2>
+    <p class="final-desc" id="final-desc"></p>
+
+    <div class="final-stats" id="final-stats"></div>
+
+    <button id="btn-again" class="btn btn--primary btn--block">Играть ещё раз</button>
+    <p class="start-note">Медиакоми · по данным активных объявлений Авито Республики Коми</p>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
